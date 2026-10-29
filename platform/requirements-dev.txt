@@ -1,0 +1,3 @@
+-r requirements.txt
+# Local UI font build and coverage/outlines tests; never imported by server.py.
+fonttools==4.63.0

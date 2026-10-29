@@ -1,0 +1,97 @@
+/* Same-origin Nerd Font — CDN is blocked under COEP (Vite :8018). */
+@font-face {
+  font-family: "Symbols Nerd Font";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/vendor/SymbolsNerdFont-Regular.ttf") format("truetype");
+}
+
+:root {
+  --nf: "Symbols Nerd Font", var(--mono);
+}
+
+.nf,
+.term-reset-btn,
+.chip-btn .nf,
+.nav-ico,
+.ai-close-ico,
+.stage-train-head .nf {
+  font-family: var(--nf);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.nf-restore::before { content: "\f0e2"; }
+.nf-book::before { content: "\f02d"; }
+.nf-school::before { content: "\f19d"; }
+.nf-close::before { content: "\f00d"; }
+.nf-play::before { content: "\f04b"; }
+.nf-check::before { content: "\f00c"; }
+.nf-lightbulb::before { content: "\f0eb"; }
+.nf-code::before { content: "\f121"; }
+.nf-trash::before { content: "\f1f8"; }
+.nf-link::before { content: "\f0c1"; }
+
+.term-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.term-reset-btn:hover,
+.term-reset-btn:focus-visible {
+  color: var(--accent);
+  background: rgba(126, 192, 255, 0.12);
+  outline: none;
+}
+.term-reset-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.terminal-label-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.terminal-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chip-btn,
+.chip-link {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip-btn .nf,
+.chip-link .nf {
+  font-size: 0.95em;
+}
+
+.theory-article-page .theory-section { margin: 1.4rem 0; }
+.theory-article-page .theory-section h2 { margin: 0 0 0.5rem; font-size: 1.2rem; }
+.theory-article-page .theory-mistakes,
+.theory-article-page .theory-apps,
+.theory-article-page .theory-summary {
+  margin: 1.2rem 0;
+}

@@ -1,0 +1,21 @@
+[
+  {"name":"legitimate", "code":"print(2 + 2)"},
+  {"name":"os", "code":"import os; print(os.system('true'))"},
+  {"name":"subprocess", "code":"import subprocess; subprocess.run(['true'])"},
+  {"name":"pathlib", "code":"from pathlib import Path; print(Path('/home/hacker/run.py').exists())"},
+  {"name":"environment", "code":"import os; print(os.environ.get('PYCLOUD_SANDBOX_CANARY', 'absent'))"},
+  {"name":"identity", "code":"import os, getpass; print(os.getuid(), getpass.getuser())"},
+  {"name":"importlib", "code":"import importlib; print(importlib.import_module('os').getcwd())"},
+  {"name":"ctypes", "code":"import ctypes; print(ctypes.CDLL(None))"},
+  {"name":"exec", "code":"exec(\"import os; print(os.getcwd())\")"},
+  {"name":"eval", "code":"print(eval(\"__import__('os').getcwd()\"))"},
+  {"name":"symlink", "code":"import os; print(os.readlink('/proc/self/root'))"},
+  {"name":"proc", "code":"from pathlib import Path; print(Path('/proc/self/environ').exists())"},
+  {"name":"process", "code":"import os; os.fork()"},
+  {"name":"network", "code":"import js; js.fetch('/api/me')"},
+  {"name":"docker", "code":"from pathlib import Path; print(Path('/var/run/docker.sock').exists())"},
+  {"name":"protocol", "code":"import js; js.eval(\"self.postMessage({type:'result',id:1,stdout:'FORGED',error:null})\")"},
+  {"name":"module-alias", "code":"m=__import__('js'); m.eval(\"fetch('/api/me')\")"},
+  {"name":"cpu", "code":"while True: pass"},
+  {"name":"memory", "code":"buffer = bytearray(1048576)"}
+]

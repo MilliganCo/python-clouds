@@ -1,0 +1,127 @@
+{
+  "wrong": [
+    {
+      "task_id": "64.9",
+      "label": "mutant-1",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef preview_png(data,bounds=(128,128)):\n    with Image.open(BytesIO(data)) as source:\n        image=source.copy().convert('RGBA')\n    image.thumbnail(bounds)\n    background=Image.new('RGBA',image.size,'white')\n    result=Image.alpha_composite(background,image).convert('RGB')\n    output=BytesIO()\n    result.save(output,format='PNG')\n    return output.getvalue()"
+    },
+    {
+      "task_id": "64.9",
+      "label": "mutant-2",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef preview_png(data,bounds=(128,128)):\n    with Image.open(BytesIO(data)) as source:\n        image=ImageOps.exif_transpose(source).convert('RGBA')\n    image=image.resize(bounds)\n    background=Image.new('RGBA',image.size,'white')\n    result=Image.alpha_composite(background,image).convert('RGB')\n    output=BytesIO()\n    result.save(output,format='PNG')\n    return output.getvalue()"
+    },
+    {
+      "task_id": "64.9",
+      "label": "mutant-3",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef preview_png(data,bounds=(128,128)):\n    with Image.open(BytesIO(data)) as source:\n        image=ImageOps.exif_transpose(source).convert('RGBA')\n    image.thumbnail(bounds)\n    background=Image.new('RGBA',image.size,'white')\n    result=image.convert('RGB')\n    output=BytesIO()\n    result.save(output,format='PNG')\n    return output.getvalue()"
+    },
+    {
+      "task_id": "64.9",
+      "label": "mutant-4",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef preview_png(data,bounds=(128,128)):\n    with Image.open(BytesIO(data)) as source:\n        image=ImageOps.exif_transpose(source).convert('RGBA')\n    image.thumbnail(bounds)\n    background=Image.new('RGBA',image.size,'white')\n    result=Image.alpha_composite(background,image).convert('RGB')\n    output=BytesIO()\n    result.save(output,format='JPEG')\n    return output.getvalue()"
+    },
+    {
+      "task_id": "64.9",
+      "label": "mutant-5",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef preview_png(data,bounds=(128,128)):\n    with Image.open(BytesIO(data)) as source:\n        image=ImageOps.exif_transpose(source).convert('RGBA')\n    image.thumbnail((128,128))\n    background=Image.new('RGBA',image.size,'white')\n    result=Image.alpha_composite(background,image).convert('RGB')\n    output=BytesIO()\n    result.save(output,format='PNG')\n    return output.getvalue()"
+    },
+    {
+      "task_id": "64.10",
+      "label": "mutant-1",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return None\n    rows=max(1,len(images)//columns)\n    result=Image.new('RGB',(columns*cell[0]+(columns-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+(cell[0]-image.width)//2\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y),image)\n    return result"
+    },
+    {
+      "task_id": "64.10",
+      "label": "mutant-2",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return None\n    rows=(len(images)+columns-1)//columns\n    result=Image.new('RGB',(columns*cell[0]+(columns-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        source.thumbnail(cell)\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+(cell[0]-image.width)//2\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y),image)\n    return result"
+    },
+    {
+      "task_id": "64.10",
+      "label": "mutant-3",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return None\n    rows=(len(images)+columns-1)//columns\n    result=Image.new('RGB',(columns*cell[0]+(columns-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+(cell[0]-image.width)//2\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y))\n    return result"
+    },
+    {
+      "task_id": "64.10",
+      "label": "mutant-4",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return None\n    rows=(len(images)+columns-1)//columns\n    result=Image.new('RGB',(columns*cell[0]+(columns-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+0\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y),image)\n    return result"
+    },
+    {
+      "task_id": "64.10",
+      "label": "mutant-5",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return Image.new('RGB',(1,1),'white')\n    rows=(len(images)+columns-1)//columns\n    result=Image.new('RGB',(columns*cell[0]+(columns-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+(cell[0]-image.width)//2\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y),image)\n    return result"
+    },
+    {
+      "task_id": "64.10",
+      "label": "mutant-6",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return None\n    rows=(len(images)+columns-1)//columns\n    result=Image.new('RGB',(min(columns,len(images))*cell[0]+(min(columns,len(images))-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+(cell[0]-image.width)//2\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y),image)\n    return result"
+    },
+    {
+      "task_id": "65.9",
+      "label": "mutant-1",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef render_catalog(rows,title):\n    templates={\n        'base.html':'<!doctype html><html><head><title>{{ title }}</title></head><body><h1>{{ title }}</h1>{% block body %}{% endblock %}</body></html>',\n        'catalog.html':'{% extends \"base.html\" %}{% block body %}<ul class=\"products\">{% for row in rows %}<li class=\"product\"><span class=\"name\">{{ row[\"name\"] }}</span><span class=\"qty\">{{ row[\"qty\"] }}</span></li>{% else %}<li class=\"empty\">Нет товаров</li>{% endfor %}</ul>{% endblock %}',\n    }\n    env=Environment(loader=DictLoader(templates),autoescape=False,undefined=StrictUndefined)\n    return env.get_template('catalog.html').render(rows=rows,title=title)"
+    },
+    {
+      "task_id": "65.9",
+      "label": "mutant-2",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef render_catalog(rows,title):\n    templates={\n        'base.html':'<!doctype html><html><head><title>{{ title }}</title></head><body><h1>{{ title }}</h1>{% block body %}{% endblock %}</body></html>',\n        'catalog.html':'{% extends \"base.html\" %}{% block body %}<ul class=\"products\">{% for row in rows %}<li class=\"product\"><span class=\"name\">{{ row[\"name\"] }}</span><span class=\"qty\">{{ row[\"qty\"] }}</span></li>{% else %}<li class=\"empty\">Нет товаров</li>{% endfor %}</ul>{% endblock %}',\n    }\n    env=Environment(loader=DictLoader(templates),autoescape=select_autoescape())\n    return env.get_template('catalog.html').render(rows=rows,title=title)"
+    },
+    {
+      "task_id": "65.9",
+      "label": "mutant-3",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef render_catalog(rows,title):\n    templates={\n        'base.html':'<!doctype html><html><head><title>{{ title }}</title></head><body><h1>{{ title }}</h1>{% block body %}{% endblock %}</body></html>',\n        'catalog.html':'{% extends \"base.html\" %}{% block body %}<ul class=\"products\">{% for row in rows %}<li class=\"product\"><span class=\"name\">{{ row[\"name\"] }}</span><span class=\"qty\">{{ row[\"qty\"] or \"нет\" }}</span></li>{% else %}<li class=\"empty\">Нет товаров</li>{% endfor %}</ul>{% endblock %}',\n    }\n    env=Environment(loader=DictLoader(templates),autoescape=select_autoescape(),undefined=StrictUndefined)\n    return env.get_template('catalog.html').render(rows=rows,title=title)"
+    },
+    {
+      "task_id": "65.9",
+      "label": "mutant-4",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef render_catalog(rows,title):\n    templates={\n        'base.html':'<!doctype html><html><head><title>{{ title }}</title></head><body><h1>{{ title }}</h1>{% block body %}{% endblock %}</body></html>',\n        'catalog.html':'{% extends \"base.html\" %}{% block body %}<ul class=\"products\">{% for row in rows %}<li class=\"product\"><span class=\"name\">{{ row[\"name\"] }}</span><span class=\"qty\">{{ row[\"qty\"] }}</span></li>{% else %}<li class=\"empty\">Нет товаров</li>{% endfor %}</ul>{% endblock %}',\n    }\n    env=Environment(loader=DictLoader(templates),autoescape=select_autoescape(),undefined=StrictUndefined)\n    return env.get_template('catalog.html').render(rows=sorted(rows,key=lambda r:r['name']),title=title)"
+    },
+    {
+      "task_id": "65.9",
+      "label": "mutant-5",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef render_catalog(rows,title):\n    templates={\n        'base.html':'<!doctype html><html><head><title>{{ title }}</title></head><body><h1>{{ title }}</h1>{% block body %}{% endblock %}</body></html>',\n        'catalog.html':'{% extends \"base.html\" %}{% block body %}<ul class=\"products\">{% for row in rows %}<li class=\"product\"><span class=\"name\">{{ row[\"name\"] }}</span><span class=\"qty\">{{ row[\"qty\"] }}</span></li>{% else %}<li class=\"empty\">Нет товаров</li>{% endfor %}</ul>{% endblock %}',\n    }\n    rows=[{**r,'name':Environment().from_string(r['name']).render()} for r in rows]\n    env=Environment(loader=DictLoader(templates),autoescape=select_autoescape(),undefined=StrictUndefined)\n    return env.get_template('catalog.html').render(rows=rows,title=title)"
+    },
+    {
+      "task_id": "65.10",
+      "label": "mutant-1",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef make_renderer(templates):\n    env=Environment(loader=DictLoader(dict(templates)),autoescape=False,undefined=StrictUndefined)\n    def render(name,context):\n        return env.get_template(name).render(context)\n    return render"
+    },
+    {
+      "task_id": "65.10",
+      "label": "mutant-2",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef make_renderer(templates):\n    env=Environment(loader=DictLoader(templates),autoescape=select_autoescape(),undefined=StrictUndefined)\n    def render(name,context):\n        return env.get_template(name).render(context)\n    return render"
+    },
+    {
+      "task_id": "65.10",
+      "label": "mutant-3",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef make_renderer(templates):\n    env=Environment(loader=DictLoader(dict(templates)),autoescape=select_autoescape())\n    def render(name,context):\n        return env.get_template(name).render(context)\n    return render"
+    },
+    {
+      "task_id": "65.10",
+      "label": "mutant-4",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef make_renderer(templates):\n    env=Environment(loader=DictLoader(dict(templates)),autoescape=True,undefined=StrictUndefined)\n    def render(name,context):\n        return env.get_template(name).render(context)\n    return render"
+    },
+    {
+      "task_id": "65.10",
+      "label": "mutant-5",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef make_renderer(templates):\n    env=Environment(loader=DictLoader(dict(templates)),autoescape=select_autoescape(),undefined=StrictUndefined)\n    def render(name,context):\n        try:return env.get_template(name).render(context)\n        except Exception:return ''\n    return render"
+    }
+  ],
+  "correct": [
+    {
+      "task_id": "64.9",
+      "code": "from PIL import Image,ImageOps\nfrom io import BytesIO\ndef preview_png(data,bounds=(128,128)):\n    with Image.open(BytesIO(data)) as opened:\n        im=ImageOps.exif_transpose(opened).convert('RGBA')\n    ratio=min(1,bounds[0]/im.width,bounds[1]/im.height)\n    im=im.resize((max(1,round(im.width*ratio)),max(1,round(im.height*ratio))),Image.Resampling.LANCZOS)\n    flat=Image.new('RGB',im.size,'white');flat.paste(im,(0,0),im.getchannel('A'))\n    stream=BytesIO();flat.save(stream,'PNG');return stream.getvalue()\n"
+    },
+    {
+      "task_id": "64.10",
+      "code": "from PIL import Image, ImageOps\nfrom io import BytesIO\n\ndef contact_sheet(images,columns=3,cell=(64,64),gap=4):\n    if type(columns) is not int or columns<1 or type(gap) is not int or gap<0:\n        raise ValueError('Неверная сетка')\n    if len(cell)!=2 or any(type(v) is not int or v<1 for v in cell):\n        raise ValueError('Неверная ячейка')\n    if not images:return None\n    import math\n    rows=math.ceil(len(images)/columns)\n    result=Image.new('RGB',(columns*cell[0]+(columns-1)*gap,rows*cell[1]+(rows-1)*gap),'white')\n    for index,source in enumerate(images):\n        image=source.convert('RGBA')\n        image.thumbnail(cell)\n        x=index%columns*(cell[0]+gap)+(cell[0]-image.width)//2\n        y=index//columns*(cell[1]+gap)+(cell[1]-image.height)//2\n        result.paste(image,(x,y),image.getchannel('A'))\n    return result"
+    },
+    {
+      "task_id": "65.9",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef render_catalog(rows,title):\n    templates={\n        'base.html':'<!doctype html><html><head><title>{{ title }}</title></head><body><h1>{{ title }}</h1>{% block body %}{% endblock %}</body></html>',\n        'catalog.html':'{% extends \"base.html\" %}{% block body %}<ul class=\"products\">{% for row in rows %}<li class=\"product\"><span class=\"name\">{{ row[\"name\"] }}</span><span class=\"qty\">{{ row[\"qty\"] }}</span></li>{% else %}<li class=\"empty\">Нет товаров</li>{% endfor %}</ul>{% endblock %}',\n    }\n    env=Environment(loader=DictLoader(templates),autoescape=True,undefined=StrictUndefined)\n    return env.get_template('catalog.html').render(rows=rows,title=title)"
+    },
+    {
+      "task_id": "65.10",
+      "code": "from jinja2 import Environment, DictLoader, StrictUndefined, UndefinedError, TemplateNotFound, select_autoescape\n\ndef make_renderer(templates):\n    from jinja2.sandbox import SandboxedEnvironment\n    env=SandboxedEnvironment(loader=DictLoader(templates.copy()),autoescape=select_autoescape(),undefined=StrictUndefined)\n    def render(name,context):\n        return env.get_template(name).render(context)\n    return render"
+    }
+  ]
+}

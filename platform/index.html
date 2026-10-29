@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python в облаках</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="topic-map.css">
+  <link rel="stylesheet" href="nerd-icons.css">
+</head>
+<body>
+  <div class="sky-bg" aria-hidden="true">
+    <div class="sky-base"></div>
+    <div class="sky-blue-pulse"></div>
+    <div class="sky-veil"></div>
+    <div class="sky-haze-stage">
+      <div class="sky-haze sky-haze-1"></div>
+      <div class="sky-haze sky-haze-2"></div>
+      <div class="sky-haze sky-haze-3"></div>
+      <div class="sky-haze sky-haze-4"></div>
+    </div>
+    <div class="sky-void"></div>
+    <canvas class="sky-fx-leaves" id="skyFxLeaves" aria-hidden="true"></canvas>
+  </div>
+
+  <!-- ── Экран входа ─────────────────────────────────────────────────── -->
+  <section class="auth" id="authView" hidden>
+    <div class="auth-card">
+      <h1 class="wordmark">Python <span>в облаках</span></h1>
+      <p class="auth-sub">Практика Python: темы от простого к сложному, встроенный запуск кода и личный ИИ-помощник.</p>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" data-mode="login" role="tab">Вход</button>
+        <button class="auth-tab" data-mode="register" role="tab">Регистрация</button>
+      </div>
+
+      <form id="authForm">
+        <label>Имя
+          <input id="authUser" type="text" autocomplete="username" required minlength="3" maxlength="32">
+        </label>
+        <label>Пароль
+          <input id="authPass" type="password" autocomplete="current-password" required minlength="6">
+        </label>
+        <p class="auth-error" id="authError" role="alert"></p>
+        <button type="submit" class="btn dark wide" id="authSubmit">Войти</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── Приложение ──────────────────────────────────────────────────── -->
+  <div id="appView" hidden>
+    <a href="#listView" class="skip-content" id="skipContent">К содержимому</a>
+    <header class="topbar">
+      <h1 class="wordmark small"><a href="#/" class="home-link">Python <span>в облаках</span></a></h1>
+
+      <nav class="main-nav" aria-label="Основные разделы">
+        <a class="nav-link active" data-route="home" href="#/">Главная</a>
+        <a class="nav-link" data-route="topics" href="#/topics">Темы</a>
+        <a class="nav-link" data-route="atlas" href="#/atlas">Атлас</a>
+        <a class="nav-link" data-route="projects" href="#/projects">Квесты</a>
+        <a class="nav-link" data-route="showcase" href="#/showcase">Доска</a>
+        <a class="nav-link" data-route="games" href="#/game">Игры</a>
+        <a class="nav-link" data-route="shop" href="#/shop">Магазин</a>
+        <a class="nav-link" data-route="profile" href="#/profile">Профиль</a>
+      </nav>
+
+      <div class="progress-card compact" title="Ваш ранг и опыт">
+        <div class="rank-row">
+          <span class="rank-name" id="rankName">Новичок</span>
+          <span class="xp" id="xpLabel">0 XP</span>
+        </div>
+        <div class="xp-track" role="progressbar" aria-label="Прогресс до следующего ранга">
+          <div class="xp-fill" id="xpFill"></div>
+        </div>
+        <div class="stats" id="stats" hidden></div>
+      </div>
+
+      <div class="user-chip">
+        <span class="drops-pill" id="dropsPill" title="Капли — внутренняя валюта: задания, сундук, мини-игры">
+          <span class="drop-dot" aria-hidden="true"></span><span id="dropsLabel">0</span>
+        </span>
+        <a id="userName" class="user-link" href="#/profile" title="Открыть профиль"></a>
+        <button class="link-btn" id="logoutBtn">Выйти</button>
+      </div>
+    </header>
+
+    <!-- главная / каталог тем -->
+    <section id="listView" tabindex="-1" aria-label="Содержимое страницы">
+      <nav id="curriculumBranches" class="curriculum-branches" aria-label="Направления обучения" hidden>
+        <a class="btn" href="#/topics" data-curriculum="python">Python</a>
+        <a class="btn" href="#/topics/tools" data-curriculum="tools">Инструменты и библиотеки</a>
+      </nav>
+      <aside id="diagnosticCallout" class="pane diagnostic-callout" aria-label="Выбор точки входа" hidden>
+        <p>Не уверены, с какой темы начать? Пять заданий по основам Python помогут выбрать ориентир.</p>
+        <a class="btn" href="#/diagnostic">Диагностика без зачёта</a>
+      </aside>
+      <nav class="controls" id="topicsControls" hidden>
+        <div class="tabs" id="levelTabs" role="tablist">
+          <button class="tab active" data-level="all" role="tab">Все</button>
+          <button class="tab" data-level="beginner" role="tab">Начальный</button>
+          <button class="tab" data-level="intermediate" role="tab">Средний</button>
+          <button class="tab" data-level="advanced" role="tab">Продвинутый</button>
+          <button class="tab" data-level="expert" role="tab">Экспертный</button>
+        </div>
+        <select id="levelMobile" aria-label="Уровень тем">
+          <option value="all">Все уровни</option>
+          <option value="beginner">Начальный</option>
+          <option value="intermediate">Средний</option>
+          <option value="advanced">Продвинутый</option>
+          <option value="expert">Экспертный</option>
+        </select>
+        <input id="search" type="search" class="search" placeholder="Поиск по темам и заданиям" aria-label="Поиск">
+        <div class="catalog-view-switch" role="group" aria-label="Вид каталога">
+          <button type="button" data-catalog-view="list" aria-pressed="true">Список</button>
+          <button type="button" data-catalog-view="map" aria-label="Облачная карта" aria-pressed="false"><span class="catalog-view-long">Облачная карта</span><span class="catalog-view-short" aria-hidden="true">Облака</span></button>
+        </div>
+      </nav>
+      <div class="topics-viewport" id="topicsViewport">
+        <div class="topics-edge topics-edge-top" aria-hidden="true"></div>
+        <main id="topics" class="topics"></main>
+        <div class="topics-edge topics-edge-bottom" aria-hidden="true"></div>
+      </div>
+      <footer class="footer">
+        <span>Эталоны проверены в CPython 3.14 · Python выполняется на сервере, файлы — на один запуск</span>
+        <span id="footCount"></span>
+      </footer>
+    </section>
+
+    <!-- страница задания (наполняется скриптом) -->
+    <section id="taskView" tabindex="-1" role="main" aria-label="Содержимое страницы" hidden></section>
+  </div>
+
+  <!-- ── Панель ИИ-помощника ─────────────────────────────────────────── -->
+  <aside class="ai-drawer" id="aiDrawer" aria-hidden="true" inert>
+    <div class="ai-head">
+      <div>
+        <strong id="aiTaskId">Помощник</strong>
+        <span class="ai-engine" id="aiEngine"></span>
+      </div>
+      <button class="link-btn" id="aiClose" aria-label="Закрыть"><span class="nf nf-close" aria-hidden="true"></span></button>
+    </div>
+    <div class="ai-context" id="aiContext"></div>
+    <div class="ai-log" id="aiLog"></div>
+    <form class="ai-input" id="aiForm">
+      <input id="aiQuestion" type="text" placeholder="Спросите про это задание" autocomplete="off" aria-label="Вопрос">
+      <button type="submit" class="btn dark">Спросить</button>
+    </form>
+  </aside>
+  <div class="ai-scrim" id="aiScrim" hidden></div>
+
+  <!-- ── Песочница Python ────────────────────────────────────────────── -->
+  <button type="button" class="sandbox-fab" id="sandboxFab" hidden aria-label="Открыть песочницу">
+  <span class="fab-icon">▷</span> Песочница
+  </button>
+  <aside class="sandbox-drawer" id="sandboxDrawer" aria-hidden="true" inert>
+    <div class="sandbox-head">
+      <div>
+        <strong>Песочница Python</strong>
+        <span class="sandbox-sub">Свободный интерпретатор · Ctrl+Enter для запуска</span>
+      </div>
+      <button class="link-btn" id="sandboxClose" aria-label="Закрыть">закрыть</button>
+    </div>
+    <div class="terminal-glass editable">
+      <div class="terminal-label-bar"><label class="terminal-title" for="sandboxEditor">main.py</label></div>
+      <textarea class="sandbox-editor" id="sandboxEditor" spellcheck="false" placeholder="# Пишите любой Python-код&#10;print('Привет!')"></textarea>
+    </div>
+    <div data-python-runtime-help></div>
+    <div class="run-row sandbox-actions">
+      <button class="btn accent" id="sandboxRun">Запустить</button>
+      <button class="btn" id="sandboxReset">Сбросить</button>
+      <span class="run-status" id="sandboxStatus"></span>
+    </div>
+    <div class="terminal-glass readonly output-terminal">
+      <div class="terminal-label-bar"><span class="terminal-title">Вывод</span></div>
+      <div class="terminal-body sandbox-output" id="sandboxOutput"></div>
+    </div>
+  </aside>
+  <div class="sandbox-scrim" id="sandboxScrim"></div>
+
+  <!-- ── Квиз после регистрации ──────────────────────────────────────── -->
+  <div class="quiz-modal" id="quizModal" hidden aria-hidden="true" role="dialog" aria-labelledby="quizTitle">
+    <div class="quiz-card">
+      <h2 id="quizTitle">Пара вопросов о вас</h2>
+      <p class="quiz-sub">Подстроим курс под ваш опыт. Это займёт 20 секунд, можно пропустить.</p>
+
+      <div class="quiz-q">
+        <p class="quiz-label">Опыт в программировании</p>
+        <div class="quiz-opts" data-q="experience">
+          <button type="button" class="quiz-opt" data-v="Никогда не программировал(а)">Никогда не программировал(а)</button>
+          <button type="button" class="quiz-opt" data-v="Знаю основы">Знаю основы</button>
+          <button type="button" class="quiz-opt" data-v="Пишу код уверенно">Пишу код уверенно</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <p class="quiz-label">Зачем учите Python</p>
+        <div class="quiz-opts" data-q="goal">
+          <button type="button" class="quiz-opt" data-v="Учёба">Учёба</button>
+          <button type="button" class="quiz-opt" data-v="Работа и карьера">Работа и карьера</button>
+          <button type="button" class="quiz-opt" data-v="Для себя">Для себя</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <p class="quiz-label">Что уже знакомо <span class="quiz-hint">(можно несколько)</span></p>
+        <div class="quiz-opts multi" data-q="known">
+          <button type="button" class="quiz-opt" data-v="переменные">переменные</button>
+          <button type="button" class="quiz-opt" data-v="циклы">циклы</button>
+          <button type="button" class="quiz-opt" data-v="функции">функции</button>
+          <button type="button" class="quiz-opt" data-v="ООП">ООП</button>
+          <button type="button" class="quiz-opt" data-v="ничего из этого">ничего из этого</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <p class="quiz-label">Как вам удобнее учиться</p>
+        <div class="quiz-opts" data-q="style">
+          <button type="button" class="quiz-opt" data-v="Сначала теория">Сначала теория</button>
+          <button type="button" class="quiz-opt" data-v="Сразу практика">Сразу практика</button>
+        </div>
+      </div>
+
+      <div class="quiz-actions">
+        <button type="button" class="btn dark" id="quizDone">Готово</button>
+        <button type="button" class="link-btn" id="quizSkip">Пропустить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Модалка успеха ───────────────────────────────────────────────── -->
+  <div class="success-modal" id="successModal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+    <div class="success-card">
+      <div class="success-burst" aria-hidden="true"></div>
+      <div class="success-xp" id="successXp">+10 XP</div>
+      <h2 id="successTitle" tabindex="-1">Задание решено!</h2>
+      <p class="success-msg" id="successMsg">Отличная работа. Опыт добавлен.</p>
+      <section class="success-explanation" id="successExplanation" hidden aria-labelledby="successExplanationTitle">
+        <h3 id="successExplanationTitle">Разбор задания</h3>
+        <div id="successExplanationBody"></div>
+      </section>
+      <div class="success-review" id="successReview" hidden></div>
+      <div class="success-actions">
+        <button type="button" class="btn dark" id="successNext">Следующий этап</button>
+        <button type="button" class="btn" id="successStay">Остаться и потренироваться</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="tasks.js"></script>
+  <script src="changelog.js"></script>
+  <script src="theory.js"></script>
+  <script src="theory-articles-0-6.js"></script>
+  <script src="theory-articles-7-12.js"></script>
+  <script src="theory-articles-13-25.js"></script>
+  <script src="theory-articles-26-39.js"></script>
+  <script src="theory-articles-40-50.js"></script>
+  <script src="theory-articles-52-53.js"></script>
+  <script src="theory-articles-54.js"></script>
+  <script src="theory-articles-55.js"></script>
+  <script src="theory-articles-56.js"></script>
+  <script src="theory-articles-57.js"></script>
+  <script src="theory-articles-58.js"></script>
+  <script src="theory-articles-59.js"></script>
+  <script src="theory-articles-60.js"></script>
+  <script src="theory-articles-61.js"></script>
+  <script src="theory-articles-62.js"></script>
+  <script src="theory-articles-63.js"></script>
+  <script src="lessons.js"></script>
+  <script src="task-intros.js"></script>
+  <script src="hints.js"></script>
+  <script src="checks.js"></script>
+  <script src="challenges.js"></script>
+  <script src="insights.js"></script>
+  <script src="achievements.js"></script>
+  <script src="minigame.js"></script>
+  <script src="session-scope.js"></script>
+  <script src="draft-sync.js"></script>
+  <script src="learning-archive.js"></script>
+  <script src="python-execution.js"></script>
+  <script src="runner.js"></script>
+  <script src="test-report.js"></script>
+  <script src="terminal.js"></script>
+  <script src="output-files.js"></script>
+  <script src="runtime-help.js"></script>
+  <script src="editor-keys.js"></script>
+  <script src="ai-helper.js"></script>
+  <script src="generated/web-shared-tasks.js"></script>
+  <script src="cloud-models.js"></script>
+  <script src="topic-map.js"></script>
+  <script src="curriculum.js"></script>
+  <script src="diagnostic-tasks.js"></script>
+  <script src="diagnostic.js"></script>
+  <script src="glossary.js"></script>
+  <script src="error-help.js"></script>
+  <script src="chest.js"></script>
+  <script src="project-courses.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

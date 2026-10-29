@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Python в облаках</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>"
+    />
+  </head>
+  <body>
+    <div class="sky-bg" aria-hidden="true">
+      <div class="sky-base"></div>
+      <div class="sky-blue-pulse"></div>
+      <div class="sky-veil"></div>
+      <div class="sky-haze-stage">
+        <div class="sky-haze sky-haze-1"></div>
+        <div class="sky-haze sky-haze-2"></div>
+        <div class="sky-haze sky-haze-3"></div>
+        <div class="sky-haze sky-haze-4"></div>
+      </div>
+      <div class="sky-void"></div>
+      <canvas class="sky-fx-leaves" id="skyFxLeaves" aria-hidden="true"></canvas>
+    </div>
+    <div id="react-root" data-ui="react"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

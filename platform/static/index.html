@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python в облаках</title>
+  <script src="catalogue-loader.js" data-course-loader async></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="topic-map.css">
+  <link rel="stylesheet" href="sky-scenes.css">
+  <link rel="stylesheet" href="nerd-icons.css">
+</head>
+<body>
+  <div id="catalogueLoadStatus" class="pane" role="status" style="position:relative;max-width:760px;margin:24px auto;padding:20px" hidden></div>
+  <details id="loadReportHelp" style="position:relative;max-width:760px;margin:16px auto;padding:16px;border:1px solid #78889f;border-radius:12px;background:#101c30;color:#e2eaf5">
+    <summary>Помощь с загрузкой</summary>
+    <p>Если страница не открылась, сохраните отчёт и приложите его к сообщению о проблеме. В нём только раздел, версия, этап загрузки и состояние запросов. Код, имя и содержимое ответов в отчёт не входят.</p>
+    <label for="loadReportText">Данные отчёта</label>
+    <textarea id="loadReportText" readonly rows="7" spellcheck="false" style="display:block;box-sizing:border-box;width:100%;margin:8px 0;font:13px/1.5 monospace;background:#101c30;color:#e2eaf5">{"schema":1,"observer":"not_started"}</textarea>
+    <p>Отправки по сети нет. Если кнопка недоступна, скопируйте текст из поля вручную.</p>
+    <button id="loadReportDownload" type="button" class="btn" disabled>Скачать отчёт</button>
+    <button id="loadReportClose" type="button" class="btn">Закрыть</button>
+    <span id="loadReportNotice" role="status"></span>
+  </details>
+  <div class="sky-bg" aria-hidden="true">
+    <div class="sky-base"></div>
+    <div class="sky-blue-pulse"></div>
+    <div class="sky-veil"></div>
+    <div class="sky-haze-stage">
+      <div class="sky-haze sky-haze-1"></div>
+      <div class="sky-haze sky-haze-2"></div>
+      <div class="sky-haze sky-haze-3"></div>
+      <div class="sky-haze sky-haze-4"></div>
+    </div>
+    <div class="sky-void"></div>
+    <canvas class="sky-fx-leaves" id="skyFxLeaves" aria-hidden="true"></canvas>
+  </div>
+
+  <!-- ── Экран входа ─────────────────────────────────────────────────── -->
+  <section class="auth" id="authView" hidden>
+    <div class="auth-welcome">
+      <h1 class="auth-title">Python<br><span>в облаках</span></h1>
+      <p class="auth-sub">Практика Python: темы от простого к сложному, встроенный запуск кода и личный ИИ-помощник.</p>
+      <p class="auth-invitation">Пишите код, исследуйте темы и двигайтесь в своём темпе.</p>
+    </div>
+    <div class="auth-card">
+      <h2 class="auth-form-title">Рады вас видеть</h2>
+      <p class="auth-form-intro">Войдите или создайте аккаунт, чтобы продолжить.</p>
+      <p id="authNotice" class="auth-notice" role="status" hidden></p>
+
+      <div class="auth-tabs" role="group" aria-label="Вход или регистрация">
+        <button class="auth-tab active" data-mode="login" aria-pressed="true">Вход</button>
+        <button class="auth-tab" data-mode="register" aria-pressed="false">Регистрация</button>
+      </div>
+
+      <form id="authForm">
+        <label>Имя
+          <input id="authUser" type="text" autocomplete="username" required minlength="3" maxlength="32">
+        </label>
+        <label>Пароль
+          <input id="authPass" type="password" autocomplete="current-password" required minlength="6">
+        </label>
+        <p class="auth-error" id="authError" role="alert"></p>
+        <button type="submit" class="btn dark wide" id="authSubmit">Войти</button>
+      </form>
+      <button type="button" class="link-btn" id="authRecovery">Забыли пароль?</button>
+      <div id="accountRecoveryPanel" class="account-recovery" hidden></div>
+      <button type="button" class="link-btn" data-load-report-open>Помощь с загрузкой</button>
+    </div>
+  </section>
+
+  <!-- ── Приложение ──────────────────────────────────────────────────── -->
+  <div id="appView" hidden>
+    <a href="#listView" class="skip-content" id="skipContent">К содержимому</a>
+    <header class="topbar">
+      <h1 class="wordmark small"><a href="#/" class="home-link">Python <span>в облаках</span></a></h1>
+
+      <nav class="main-nav" aria-label="Основные разделы">
+        <a class="nav-link active" data-route="home" href="#/">Главная</a>
+        <a class="nav-link" data-route="topics" href="#/topics">Темы</a>
+        <a class="nav-link" data-route="atlas" href="#/atlas">Атлас</a>
+        <a class="nav-link" data-route="projects" href="#/projects">Квесты</a>
+        <a class="nav-link" data-route="workshop" href="#/workshop">Мастерская</a>
+        <a class="nav-link" data-route="showcase" href="#/showcase">Доска</a>
+        <a class="nav-link" data-route="games" href="#/game">Игры</a>
+        <a class="nav-link" data-route="shop" href="#/shop">Магазин</a>
+        <a class="nav-link" data-route="profile" href="#/profile">Профиль</a>
+      </nav>
+
+      <div class="progress-card compact" title="Ваш ранг и опыт">
+        <div class="rank-row">
+          <span class="rank-name" id="rankName">Новичок</span>
+          <span class="xp" id="xpLabel">0 XP</span>
+        </div>
+        <div class="xp-track" role="progressbar" aria-label="Прогресс до следующего ранга">
+          <div class="xp-fill" id="xpFill"></div>
+        </div>
+        <div class="stats" id="stats" hidden></div>
+      </div>
+
+      <div class="user-chip">
+        <span class="drops-pill" id="dropsPill" title="Капли — внутренняя валюта: задания, сундук, мини-игры">
+          <span class="drop-dot" aria-hidden="true"></span><span id="dropsLabel">0</span>
+        </span>
+        <a id="userName" class="user-link" href="#/profile" title="Открыть профиль"></a>
+        <button class="link-btn" id="logoutBtn">Выйти</button>
+        <button type="button" class="link-btn" data-load-report-open>Помощь с загрузкой</button>
+        <button type="button" class="link-btn" id="skyMotionToggle" aria-pressed="false">Пауза фона</button>
+      </div>
+    </header>
+
+    <!-- главная / каталог тем -->
+    <section id="listView" tabindex="-1" aria-label="Содержимое страницы">
+      <nav id="curriculumBranches" class="curriculum-branches" aria-label="Направления обучения" hidden>
+        <a class="btn" href="#/topics" data-curriculum="python">Python</a>
+        <a class="btn" href="#/topics/tools" data-curriculum="tools">Инструменты и библиотеки</a>
+      </nav>
+      <aside id="diagnosticCallout" class="pane diagnostic-callout" aria-label="Выбор точки входа" hidden>
+        <p>Не уверены, с какой темы начать? Пять заданий по основам Python помогут выбрать ориентир.</p>
+        <a class="btn" href="#/diagnostic">Диагностика без зачёта</a>
+      </aside>
+      <nav class="controls" id="topicsControls" hidden>
+        <div class="tabs" id="levelTabs" role="group" aria-label="Уровень тем">
+          <button class="tab active" data-level="all" aria-pressed="true">Все</button>
+          <button class="tab" data-level="beginner" aria-pressed="false">Начальный</button>
+          <button class="tab" data-level="intermediate" aria-pressed="false">Средний</button>
+          <button class="tab" data-level="advanced" aria-pressed="false">Продвинутый</button>
+          <button class="tab" data-level="expert" aria-pressed="false">Экспертный</button>
+        </div>
+        <select id="levelMobile" aria-label="Уровень тем">
+          <option value="all">Все уровни</option>
+          <option value="beginner">Начальный</option>
+          <option value="intermediate">Средний</option>
+          <option value="advanced">Продвинутый</option>
+          <option value="expert">Экспертный</option>
+        </select>
+        <input id="search" type="search" class="search" placeholder="Поиск по темам и заданиям" aria-label="Поиск">
+        <div class="catalog-view-switch" role="group" aria-label="Вид каталога">
+          <button type="button" data-catalog-view="list" aria-pressed="true">Список</button>
+          <button type="button" data-catalog-view="map" aria-label="Облачная карта" aria-pressed="false"><span class="catalog-view-long">Облачная карта</span><span class="catalog-view-short" aria-hidden="true">Облака</span></button>
+        </div>
+      </nav>
+      <div class="topics-viewport" id="topicsViewport">
+        <div class="topics-edge topics-edge-top" aria-hidden="true"></div>
+        <main id="topics" class="topics"></main>
+        <div class="topics-edge topics-edge-bottom" aria-hidden="true"></div>
+      </div>
+      <footer class="footer">
+        <span id="footCount"></span>
+      </footer>
+    </section>
+
+    <!-- страница задания (наполняется скриптом) -->
+    <section id="taskView" tabindex="-1" role="main" aria-label="Содержимое страницы" hidden></section>
+  </div>
+
+  <!-- ── Панель ИИ-помощника ─────────────────────────────────────────── -->
+  <aside class="ai-drawer" id="aiDrawer" aria-hidden="true" inert>
+    <div class="ai-head">
+      <div>
+        <strong id="aiTaskId">Помощник</strong>
+        <span class="ai-engine" id="aiEngine"></span>
+      </div>
+      <button class="link-btn" id="aiClose" aria-label="Закрыть"><span class="nf nf-close" aria-hidden="true"></span></button>
+    </div>
+    <div class="ai-context" id="aiContext"></div>
+    <div class="ai-log" id="aiLog"></div>
+    <p class="ai-send-notice">Вопрос и условие задания отправятся внешнему ИИ. Прошлая история, память и сводка прогресса добавляются по вашим настройкам в профиле.</p>
+    <form class="ai-input" id="aiForm">
+      <input id="aiQuestion" type="text" placeholder="Спросите про это задание" autocomplete="off" aria-label="Вопрос">
+      <button type="submit" class="btn dark">Спросить</button>
+    </form>
+  </aside>
+  <div class="ai-scrim" id="aiScrim" hidden></div>
+
+  <!-- ── Песочница Python ────────────────────────────────────────────── -->
+  <button type="button" class="sandbox-fab" id="sandboxFab" hidden aria-label="Открыть песочницу">
+  <span class="fab-icon">▷</span> Песочница
+  </button>
+  <aside class="sandbox-drawer" id="sandboxDrawer" aria-hidden="true" inert>
+    <div class="sandbox-head">
+      <div>
+        <strong>Песочница Python</strong>
+        <span class="sandbox-sub">Свободный интерпретатор · Ctrl+Enter для запуска</span>
+      </div>
+      <button class="link-btn" id="sandboxClose" aria-label="Закрыть">закрыть</button>
+    </div>
+    <div class="terminal-glass editable">
+      <div class="terminal-label-bar"><label class="terminal-title" for="sandboxEditor">main.py</label></div>
+      <textarea class="sandbox-editor" id="sandboxEditor" spellcheck="false" placeholder="# Пишите любой Python-код&#10;print('Привет!')"></textarea>
+    </div>
+    <div data-python-runtime-help></div>
+    <div class="run-row sandbox-actions">
+      <button class="btn accent" id="sandboxRun">Запустить</button>
+      <button class="btn" id="sandboxReset">Сбросить</button>
+      <span class="run-status" id="sandboxStatus"></span>
+    </div>
+    <div class="terminal-glass readonly output-terminal">
+      <div class="terminal-label-bar"><span class="terminal-title">Вывод</span></div>
+      <div class="terminal-body sandbox-output" id="sandboxOutput"></div>
+    </div>
+  </aside>
+  <div class="sandbox-scrim" id="sandboxScrim"></div>
+
+  <!-- ── Первый шаг после регистрации ──────────────────────────────── -->
+  <dialog class="quiz-modal" id="quizModal" hidden aria-labelledby="quizTitle" aria-describedby="quizDescription">
+    <div class="quiz-card">
+      <h2 id="quizTitle">С чего начнём?</h2>
+      <p class="quiz-sub" id="quizDescription">Курс начинается с основ. Если они уже знакомы, выберите нужную тему.</p>
+      <div class="welcome-choices">
+        <button type="button" class="btn dark" id="quizDone" autofocus>Начать курс</button>
+        <button type="button" class="btn" id="quizTopics">Выбрать тему</button>
+      </div>
+      <div class="quiz-actions">
+        <button type="button" class="link-btn" id="quizSkip">Пропустить этот шаг</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ── Модалка успеха ───────────────────────────────────────────────── -->
+  <div class="success-modal" id="successModal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+    <div class="success-card">
+      <div class="success-burst" aria-hidden="true"></div>
+      <div class="success-xp" id="successXp">+10 XP</div>
+      <h2 id="successTitle" tabindex="-1">Задание решено!</h2>
+      <p class="success-msg" id="successMsg">Отличная работа. Опыт добавлен.</p>
+      <section class="success-explanation" id="successExplanation" hidden aria-labelledby="successExplanationTitle">
+        <h3 id="successExplanationTitle">Разбор задания</h3>
+        <div id="successExplanationBody"></div>
+      </section>
+      <div class="success-review" id="successReview" hidden></div>
+      <div class="success-actions">
+        <button type="button" class="btn dark" id="successNext">Следующий этап</button>
+        <button type="button" class="btn" id="successStay">Остаться и потренироваться</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/x-pycloud-script" data-course-src="task-index.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="tasks.js"></script>
+  <!-- task-banks:start -->
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-0.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-1.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-2.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-3.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-4.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-5.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-6.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-7.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-8.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-9.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-41.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-10.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-11.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-12.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-13.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-14.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-15.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-16.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-17.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-18.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-19.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-20.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-22.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-21.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-23.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-24.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-26.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-42.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-43.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-44.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-45.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-46.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-47.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-48.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-49.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-50.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-51.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-25.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-32.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-33.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-27.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-28.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-34.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-35.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-37.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-36.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-38.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-39.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-30.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-29.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-31.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-40.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-54.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-52.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-53.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-55.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-56.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-57.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-58.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-59.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-60.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-64.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-61.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-65.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-62.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-banks/topic-63.js"></script>
+  <!-- task-banks:end -->
+  <script type="application/x-pycloud-script" data-course-src="changelog.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-manifest.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-0-6.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-7-12.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-13-25.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-26-39.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-40-50.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-52-53.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-54.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-55.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-56.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-57.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-58.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-59.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-60.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-61.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-62.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-63.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-64.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="theory-articles-65.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="lessons.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="task-intros.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="hints.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="checks.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="challenges.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="insights.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="achievements.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="minigame.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="counterexample-data.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="counterexample-game.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="session-scope.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="draft-sync.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="learning-archive.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="python-execution.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="runner.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="test-report.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="terminal.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="output-files.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="runtime-help.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="editor-keys.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="ai-helper.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="generated/web-shared-tasks.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="cloud-models.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="topic-map.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="curriculum.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="diagnostic-tasks.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="diagnostic.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="glossary.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="error-help.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="chest.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="project-courses.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="sky-scenes.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="workshop.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="game-results.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="account-security.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="ai-settings.js"></script>
+  <script type="application/x-pycloud-script" data-course-src="app.js"></script>
+</body>
+</html>

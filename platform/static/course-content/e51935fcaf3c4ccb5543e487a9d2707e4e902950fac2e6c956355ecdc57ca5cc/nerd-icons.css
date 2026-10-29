@@ -1,0 +1,170 @@
+/* Nerd Fonts — только символы для UI-иконок.
+ * Источник: https://github.com/ryanoasis/nerd-fonts (NerdFontsSymbolsOnly)
+ * UI subset: scripts/build_ui_font.py; original TTF and upstream license retained.
+ * Файл — свой (vendor/), не CDN: без font-src в CSP шрифт с чужого домена
+ * не грузится (default-src 'self' блокирует), плюс не зависим от аптайма CDN. */
+@font-face {
+  font-family: "Symbols Nerd Font";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("vendor/CloudSymbols-UI.woff") format("woff");
+}
+
+:root {
+  --nf: "Symbols Nerd Font", var(--mono);
+}
+
+.nf,
+.term-reset-btn,
+.chip-btn .nf,
+.nav-ico,
+.ai-close-ico,
+.stage-train-head .nf {
+  font-family: var(--nf);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  /* иконка должна читаться как иконка, не как соседняя буква текста */
+  color: var(--accent);
+  opacity: 0.88;
+}
+
+/* Часто используемые глифы (Material Design / Codicons через NF) */
+.nf-restore::before { content: "\f0e2"; }      /* undo / restore */
+.nf-book::before { content: "\f02d"; }         /* book */
+.nf-school::before { content: "\f19d"; }       /* graduation */
+.nf-close::before { content: "\f00d"; }        /* close */
+.nf-play::before { content: "\f04b"; }         /* play */
+.nf-check::before { content: "\f00c"; }        /* check */
+.nf-lightbulb::before { content: "\f0eb"; }    /* tip */
+.nf-code::before { content: "\f121"; }         /* code */
+.nf-trash::before { content: "\f1f8"; }        /* clear */
+.nf-link::before { content: "\f0c1"; }         /* link */
+
+.term-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.term-reset-btn:hover,
+.term-reset-btn:focus-visible {
+  color: var(--accent);
+  background: rgba(126, 192, 255, 0.12);
+  outline: none;
+}
+.term-reset-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.terminal-label-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.terminal-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chip-btn,
+.chip-link {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip-btn .nf,
+.chip-link .nf {
+  font-size: 0.95em;
+}
+
+.stage-train-modal {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: var(--ink);
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+.stage-train-modal::backdrop { background: transparent; }
+.learning-profile { display: grid; gap: 8px; margin-bottom: 16px; }
+.learning-profile > p { margin: 0; line-height: 1.5; }
+.learning-skills { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.learning-skills .chip { max-width: 100%; white-space: normal; overflow-wrap: break-word; }
+@media (min-width: 720px) {
+  .stage-train-modal { align-items: center; }
+}
+.stage-train-card {
+  width: min(560px, 100%);
+  max-height: min(82vh, 720px);
+  overflow: auto;
+  border-radius: 18px;
+  background: var(--card-solid);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+  padding: 18px 20px 22px;
+}
+.stage-train-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.stage-train-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stage-goal-lead,
+.stage-apply,
+.stage-ex-note { margin: 0.55em 0; color: var(--ink-soft); }
+.stage-concepts { display: flex; flex-wrap: wrap; gap: 6px; margin: 0.4em 0 0.8em; }
+.stage-concepts code {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.stage-format { margin-top: 12px; color: var(--ink-faint); font-size: 13px; }
+.stage-format summary { cursor: pointer; color: var(--accent); }
+
+.theory-article-page .theory-section h2 { margin: 0 0 0.5rem; font-size: 1.2rem; }
+.theory-teaser-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}

@@ -1,0 +1,93 @@
+# Секреты и живая база — никогда не коммитить
+platform/instance/
+*.db
+*.sqlite
+*.sqlite3
+secret_key
+runtime-ops-*.json
+.runtime-ops-*
+*.pycloud-backup/
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Android / Gradle
+android/.gradle/
+android/.kotlin/
+android/app/build/
+android/build/
+android/local.properties
+android/*/build/
+
+# Инструменты сессии — не часть проекта
+.playwright-mcp/
+.playwright-cli/
+output/playwright/
+scratchpad/
+.agents/
+.codex/
+
+# graphify — держим итоговую карту, не рабочий кэш
+graphify-out/cache/
+graphify-out/memory/
+graphify-out/reflections/
+graphify-out/20*-*-*/
+graphify-out/.graphify_*
+
+# Разовые скрэтч-файлы (побочный результат заданий на файлы/ввод-вывод)
+/ctx.txt
+/demo_ctx.txt
+/lines.txt
+/memo.txt
+/notes.txt
+/t.csv
+/t.txt
+platform/ctx.txt
+platform/demo_ctx.txt
+platform/lines.txt
+platform/memo.txt
+platform/notes.txt
+platform/t.csv
+platform/t.txt
+
+# Скриншоты ручной проверки — не источник правды, устаревают сразу
+/*.png
+
+.worktrees/
+
+.superpowers/
+# Optional public package cache for offline sandbox builds; never commit wheels.
+platform/sandbox_exports/wheelhouse/*
+!platform/sandbox_exports/wheelhouse/.gitkeep
+
+platform/sandbox_libraries/wheelhouse/*
+!platform/sandbox_libraries/wheelhouse/.gitkeep
+
+platform/sandbox_http_plots/wheelhouse/*
+!platform/sandbox_http_plots/wheelhouse/.gitkeep
+
+platform/sandbox_web/wheelhouse/*
+!platform/sandbox_web/wheelhouse/.gitkeep
+
+# Immutable teaching build artifacts; canonical sources/flat compatibility files stay tracked.
+/platform/static/course-content/
+/platform/static/content-current.json
+/platform/.course-content/
+/platform/.content-input-*/
+/platform/.content-stage-*/
+/platform/.content-build.lock
+
+# Public snapshot includes exactly the active verified teaching generation.
+!/platform/static/content-current.json
+!/platform/static/course-content/
+/platform/static/course-content/*
+!/platform/.course-content/
+/platform/.course-content/*
+!/platform/static/course-content/e51935fcaf3c4ccb5543e487a9d2707e4e902950fac2e6c956355ecdc57ca5cc/
+!/platform/static/course-content/e51935fcaf3c4ccb5543e487a9d2707e4e902950fac2e6c956355ecdc57ca5cc/**
+!/platform/.course-content/e51935fcaf3c4ccb5543e487a9d2707e4e902950fac2e6c956355ecdc57ca5cc/
+!/platform/.course-content/e51935fcaf3c4ccb5543e487a9d2707e4e902950fac2e6c956355ecdc57ca5cc/**

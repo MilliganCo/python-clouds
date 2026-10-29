@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "anchor": "2026-10-19",
+  "tasks": [
+    {
+      "id": "weekly-parcel-revisions-v1",
+      "title": "Из обновлений посылок — в отчёт",
+      "difficulty": "intermediate",
+      "prompt": "Напишите parcel_revision_report(events). Каждая запись имеет id (непустая строка), revision (целое >=0), point (название пункта с возможными пробелами по краям), qty (целое >=0), canceled (bool). Входные значения корректны. Для каждого id возьмите наибольшую revision; при равенстве сохраните первую запись. По выбранным НЕотменённым записям сложите qty по point.strip(), сохранив пункт с нулевой суммой. Верните {\"totals\": словарь по возрастанию имён пунктов, \"canceled\": отсортированный список id отменённых выбранных записей}. Отменённая новая версия полностью заменяет старую. Вход не меняйте. Для [] оба раздела пустые. Учебные записи не описывают реальный склад.",
+      "func_name": "parcel_revision_report",
+      "starter": "def parcel_revision_report(events):\n    pass\n",
+      "solution": "def parcel_revision_report(events):\n    latest={}\n    for row in events:\n        old=latest.get(row['id'])\n        if old is None or row['revision']>old['revision']:\n            latest[row['id']]=row\n    totals={};canceled=[]\n    for id,row in latest.items():\n        if row['canceled']:\n            canceled.append(id)\n        else:\n            point=row['point'].strip()\n            totals[point]=totals.get(point,0)+row['qty']\n    return {'totals':dict(sorted(totals.items())),'canceled':sorted(canceled)}",
+      "tests": "from copy import deepcopy\ndef row(id,rev,point,qty,canceled=False):return dict(id=id,revision=rev,point=point,qty=qty,canceled=canceled)\nassert parcel_revision_report([])=={'totals':{},'canceled':[]}\ndata=[row('A',1,' Север ',2),row('A',2,'Юг',0),row('B',0,'Север',4,True)]\nbefore=deepcopy(data)\nassert parcel_revision_report(data)=={'totals':{'Юг':0},'canceled':['B']}\nassert data==before\nassert parcel_revision_report([row('x',3,'B',4),row('x',3,'A',9)])=={'totals':{'B':4},'canceled':[]}\nassert parcel_revision_report([row('x',2,'A',5,True),row('x',1,'A',8)])=={'totals':{},'canceled':['x']}\nassert parcel_revision_report([row('z',0,'A',2),row('a',0,' A ',3)])=={'totals':{'A':5},'canceled':[]}\nassert list(parcel_revision_report([row('a',1,'Z',0),row('b',1,'A',0)])['totals'])==['A','Z']\nprint('OK')",
+      "skills": [
+        "словари и группировка",
+        "выбор версии",
+        "неизменность входа"
+      ],
+      "prerequisites": [
+        3,
+        7,
+        8,
+        10
+      ],
+      "reflection": "Почему нельзя суммировать записи сразу, до выбора последней версии? Что изменится, если новая версия отменяет посылку?",
+      "explanation": "Здесь два прохода решают разные задачи: сначала идентичность и актуальность записи, затем отчёт. Сравнение строго > сохраняет первую равную ревизию. Отмена исключает выбранную посылку из сумм, а qty=0 не отменяет существование пункта."
+    },
+    {
+      "id": "weekly-stock-batch-v1",
+      "title": "Пакет изменений целиком или никак",
+      "difficulty": "intermediate",
+      "prompt": "Напишите apply_stock_batch(initial,commands). initial — корректный словарь SKU→целый остаток >=0. commands — список троек (op,sku,qty), op должен быть put или take, sku уже должен существовать, qty — целое >=0, bool не принимается. Выполните команды последовательно на копии. take сверх доступного остатка или неверная команда отменяет весь пакет: верните {\"ok\":False,\"stock\":копия initial,\"failed\":индекс первой неверной команды с 0}. При успехе верните {\"ok\":True,\"stock\":новый словарь,\"failed\":None}. Нулевое изменение допустимо; отрицательный остаток запрещён. Входы не меняйте, не добавляйте неизвестный SKU. Это модель на учебных данных, не обращение к складу.",
+      "func_name": "apply_stock_batch",
+      "starter": "def apply_stock_batch(initial,commands):\n    pass\n",
+      "solution": "def apply_stock_batch(initial,commands):\n    result=dict(initial)\n    for index,(op,sku,qty) in enumerate(commands):\n        if op not in ('put','take') or sku not in result or type(qty) is not int or qty<0:\n            return {'ok':False,'stock':dict(initial),'failed':index}\n        if op=='take' and result[sku]<qty:\n            return {'ok':False,'stock':dict(initial),'failed':index}\n        result[sku]+=qty if op=='put' else -qty\n    return {'ok':True,'stock':result,'failed':None}",
+      "tests": "from copy import deepcopy\nassert apply_stock_batch({},[])=={'ok':True,'stock':{},'failed':None}\ninitial={'A':2,'B':0};commands=[('take','A',2),('put','B',3),('take','B',1)]\nbefore=deepcopy((initial,commands))\nassert apply_stock_batch(initial,commands)=={'ok':True,'stock':{'A':0,'B':2},'failed':None}\nassert (initial,commands)==before\nassert apply_stock_batch(initial,[('put','A',5),('take','B',1)])=={'ok':False,'stock':initial,'failed':1}\nfor command in [('put','X',1),('move','A',1),('take','A',-1),('put','A',True),('put','A',1.5)]:\n    assert apply_stock_batch(initial,[command])=={'ok':False,'stock':initial,'failed':0}\nassert apply_stock_batch(initial,[('take','A',0)])=={'ok':True,'stock':initial,'failed':None}\nout=apply_stock_batch(initial,[]);out['stock']['A']=99;assert initial['A']==2\nprint('OK')",
+      "skills": [
+        "копия словаря",
+        "последовательные операции",
+        "валидация границ"
+      ],
+      "prerequisites": [
+        3,
+        6,
+        7,
+        10
+      ],
+      "reflection": "Чем отличается откат всего пакета от пропуска одной неудачной команды? Почему isinstance(qty,int) здесь недостаточно?",
+      "explanation": "Изменения накапливаются в отдельном словаре. При первой ошибке возвращается исходное состояние, а не частичный результат; это поведенческий контракт без базы данных. Bool — подкласс int, поэтому условие задачи требует точного типа. Успешная пустая команда тоже возвращает самостоятельную копию."
+    },
+    {
+      "id": "weekly-time-log-v1",
+      "title": "Из CSV — в проверенный табель",
+      "difficulty": "advanced",
+      "prompt": "Напишите time_log_report(text). text — синтаксически корректный CSV с разделителем ;, кавычки CSV могут содержать ;. Пустой текст даёт {\"minutes\":{},\"rejected\":[]}. Иначе заголовок должен быть ровно person;minutes; неверный заголовок — ValueError. После заголовка пронумеруйте CSV-записи с 1 (не физические строки внутри кавычек). Примите запись ровно из двух полей: person.strip() непустой, minutes.strip() состоит только из ASCII-цифр 0–9. Остальные записи, включая пустую, добавьте в rejected по номеру. У принятых записей сложите целые минуты по точному очищенному имени, включая 0. Верните minutes-словарь с отсортированными именами и список rejected. Не выдумывайте значения для плохих строк. Например, две записи Аня;0 и Аня;12 после правильного заголовка дают minutes={\"Аня\":12}, rejected=[].",
+      "func_name": "time_log_report",
+      "starter": "def time_log_report(text):\n    pass\n",
+      "solution": "import csv,re\nfrom io import StringIO\ndef time_log_report(text):\n    rows=csv.reader(StringIO(text),delimiter=';')\n    header=next(rows,None)\n    if header is None:return {'minutes':{},'rejected':[]}\n    if header!=['person','minutes']:raise ValueError('Неверный заголовок')\n    totals={};rejected=[]\n    for index,row in enumerate(rows,1):\n        if len(row)!=2 or not row[0].strip() or re.fullmatch(r'[0-9]+',row[1].strip()) is None:\n            rejected.append(index);continue\n        person=row[0].strip();minutes=int(row[1].strip())\n        totals[person]=totals.get(person,0)+minutes\n    return {'minutes':dict(sorted(totals.items())),'rejected':rejected}",
+      "tests": "assert time_log_report('')=={'minutes':{},'rejected':[]}\nassert time_log_report('person;minutes\\n')=={'minutes':{},'rejected':[]}\ntext='person;minutes\\n Аня ; 0 \\nАня;12\\n\"Лев;старший\";3\\nИгорь;-1\\n;5\\nИгорь;+2\\nИгорь;٢\\nИгорь;1.5\\nx;2;extra\\n\\n'\nassert time_log_report(text)=={'minutes':{'Аня':12,'Лев;старший':3},'rejected':[4,5,6,7,8,9,10]}\nassert time_log_report('person;minutes\\nБ;0\\nА;1\\n')=={'minutes':{'А':1,'Б':0},'rejected':[]}\nassert time_log_report('person;minutes\\nA;2\\nA;3\\n')=={'minutes':{'A':5},'rejected':[]}\nassert list(time_log_report('person;minutes\\nБ;0\\nА;1\\n')['minutes'])==['А','Б']\ntry:time_log_report('name;minutes\\nx;1')\nexcept ValueError:pass\nelse:raise AssertionError('Заголовок нельзя угадывать')\nprint('OK')",
+      "skills": [
+        "CSV и кавычки",
+        "проверка формата числа",
+        "отчёт о пропусках"
+      ],
+      "prerequisites": [
+        3,
+        7,
+        10,
+        18,
+        49
+      ],
+      "reflection": "Почему split(\";\") меняет смысл поля в кавычках? Как отличить честный ноль от строки, которую нельзя принять?",
+      "explanation": "CSV-reader сначала выделяет настоящие записи и поля. Далее действует явно заданная схема: очистка краёв, ASCII-цифры и непустое имя. Отчёт о пропущенных записях сохраняет возможность исправить источник; ноль остаётся значением. Номер CSV-записи не обязан совпадать с номером физической строки файла."
+    },
+    {
+      "id": "weekly-file-manifest-v1",
+      "title": "Проверить содержимое учебного архива",
+      "difficulty": "advanced",
+      "prompt": "Напишите check_file_manifest(text,files). text — JSON-массив описаний файлов, files — словарь корректное имя→bytes, все данные учебные и уже в памяти: файловую систему не трогайте. Каждое описание имеет ровно name/size/sha256. name — непустая строка, не . или .., без / и обратной косой черты; повторы имён запрещены. size — целое >=0 без bool; sha256 — ровно 64 строчных шестнадцатеричных символа. Неверный JSON, структура или описание — ValueError. Для корректных описаний верните словарь из отсортированных списков: verified (есть, размер и SHA256 совпали), missing (имени нет), mismatched (есть, но размер или хэш не совпал), extra (есть в files, нет в описаниях). Хэш вычисляйте hashlib.sha256(data).hexdigest(); пустые bytes допустимы. Входы не меняйте. Совпадение хэша здесь проверяет согласованность данных, не личность автора и не электронную подпись.",
+      "func_name": "check_file_manifest",
+      "starter": "def check_file_manifest(text,files):\n    pass\n",
+      "solution": "import json,hashlib,re\ndef check_file_manifest(text,files):\n    items=json.loads(text)\n    if type(items) is not list:raise ValueError('Нужен список')\n    seen=set();verified=[];missing=[];mismatched=[]\n    for item in items:\n        if type(item) is not dict or set(item)!={'name','size','sha256'}:raise ValueError('Неверные поля')\n        name=item['name'];size=item['size'];sha=item['sha256']\n        if type(name) is not str or name in ('','.', '..') or '/' in name or chr(92) in name or name in seen:\n            raise ValueError('Неверное имя')\n        if type(size) is not int or size<0 or type(sha) is not str or re.fullmatch(r'[0-9a-f]{64}',sha) is None:\n            raise ValueError('Неверное описание')\n        seen.add(name)\n        if name not in files:missing.append(name)\n        elif len(files[name])!=size or hashlib.sha256(files[name]).hexdigest()!=sha:mismatched.append(name)\n        else:verified.append(name)\n    return {'verified':sorted(verified),'missing':sorted(missing),'mismatched':sorted(mismatched),'extra':sorted(set(files)-seen)}",
+      "tests": "import json,hashlib\nfrom copy import deepcopy\ndef item(name,data):return {'name':name,'size':len(data),'sha256':hashlib.sha256(data).hexdigest()}\nfiles={'zero':b'','good':b'abc','bad':b'xyz','extra':b'!'}\nitems=[item('missing',b'a'),item('zero',b''),item('good',b'abc'),item('bad',b'abc')];before=deepcopy(files)\nassert check_file_manifest(json.dumps(items),files)=={'verified':['good','zero'],'missing':['missing'],'mismatched':['bad'],'extra':['extra']}\nassert files==before\nassert check_file_manifest('[]',{})=={'verified':[],'missing':[],'mismatched':[],'extra':[]}\nbad_size=item('good',b'abc');bad_size['size']=2\nassert check_file_manifest(json.dumps([bad_size]),files)['mismatched']==['good']\nfor value in [{},[item('../x',b'')],[item('x',b''),item('x',b'')],[dict(item('x',b''),size=True)],[dict(item('x',b''),sha256='Z'*64)],[dict(item('x',b''),extra='x')]]:\n    try:check_file_manifest(json.dumps(value),{})\n    except ValueError:pass\n    else:raise AssertionError('Неверное описание нельзя принять')\nprint('OK')",
+      "skills": [
+        "JSON и схема",
+        "множества имён",
+        "хэш и размер bytes"
+      ],
+      "prerequisites": [
+        3,
+        7,
+        10,
+        18,
+        26
+      ],
+      "reflection": "Почему проверки только размера недостаточно? Почему совпавший SHA256 не подтверждает, кто подготовил описание файлов?",
+      "explanation": "Сначала проверяется формат описаний и уникальность имён. Затем отдельно проверяются наличие, количество байтов и digest. Одинаковый размер не означает одинаковые байты. В этой задаче нет доверенного ключа или подписи: любой автор может написать описание для своих данных."
+    }
+  ]
+}

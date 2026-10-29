@@ -1,0 +1,13 @@
+/* Scene pixels stay inside the existing fixed sky; application panels remain above it. */
+.sky-bg > .sky-theme-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+  z-index: 2;
+  opacity: calc(1 - var(--scroll-ease, 0) * .3);
+}
+.sky-bg > .sky-theme-canvas[hidden] { display: none; }

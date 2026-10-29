@@ -1,0 +1,9 @@
+* text=auto eol=lf
+platform/static/course-content/** -text
+platform/.course-content/** -text
+platform/static/vendor/** -text
+android/app/src/main/assets/pyodide/** -text
+android/app/src/main/assets/content/content-bundle.json -text
+
+# Curriculum Markdown keeps authored hard breaks and exact code-example whitespace.
+python_tasks_collection.md whitespace=cr-at-eol,-blank-at-eol

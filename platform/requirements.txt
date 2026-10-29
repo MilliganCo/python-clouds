@@ -1,0 +1,15 @@
+flask==3.1.3
+waitress>=3.0
+# CPython verification of library course references; learners use isolated server containers.
+pandas>=3.0,<4
+numpy>=2.4,<3
+pytest==9.0.3
+openpyxl==3.1.5
+beautifulsoup4==4.15.0
+pydantic==2.14.1
+requests==2.34.2
+matplotlib==3.11.2
+
+# Explicit course dependencies, already present in the pinned sandbox image.
+Pillow>=12.2,<14
+Jinja2==3.1.6

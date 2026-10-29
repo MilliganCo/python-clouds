@@ -1,0 +1,3 @@
+# Ignore local install artifacts; keep generated browser bundle in static/generated.
+node_modules/
+*.local

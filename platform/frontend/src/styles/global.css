@@ -1,0 +1,38 @@
+@import "@legacy-styles";
+@import "./nerd-icons-coi.css";
+@import "./legacy.css";
+
+/*
+ * Bridge React mount → legacy layout.
+ * Do NOT override --ink / background here — that broke glass panes on theory.
+ */
+#react-root[data-ui="react"] {
+  display: contents;
+}
+
+#react-root[data-ui="react"] .skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  background: var(--btn-dark, #152238);
+  color: var(--ink, #fff);
+}
+
+#react-root[data-ui="react"] .skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* Auth sits outside #appView in legacy; keep full-viewport centering */
+#react-root[data-ui="react"] .auth {
+  min-height: 100dvh;
+}
+
+/* Topics catalog: React Outlet plays the role of legacy #listView */
+body.list-mode #main-content {
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  background: transparent;
+}

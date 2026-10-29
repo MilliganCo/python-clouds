@@ -1,0 +1,122 @@
+[
+  {
+    "id": "seed-parcel",
+    "difficulty": "intermediate",
+    "title": "Стоимость посылки",
+    "prompt": "Напишите `parcel_total(items)`: посчитайте стоимость всех товаров. Каждый элемент — пара `(цена, количество)`, оба числа целые и неотрицательные. Пустая посылка стоит 0. Исходный список менять нельзя.\n\nНапример, `parcel_total([(120, 2), (50, 3)])` вернёт `390`.",
+    "func_name": "parcel_total",
+    "starter": "def parcel_total(items):\n    pass\n",
+    "solution": "def parcel_total(items):\n    return sum(price * count for price, count in items)",
+    "tests": "assert parcel_total([(120, 2), (50, 3)]) == 390\nassert parcel_total([]) == 0\nassert parcel_total([(0, 5), (40, 0)]) == 0\nx = [(7, 3)]\nassert parcel_total(x) == 21\nassert x == [(7, 3)]\nprint('OK')"
+  },
+  {
+    "id": "seed-spaces",
+    "difficulty": "intermediate",
+    "title": "Аккуратная подпись",
+    "prompt": "Напишите `clean_caption(text)`: уберите пробелы по краям, а каждую группу пробельных символов внутри замените одним обычным пробелом. Табуляция и перенос строки тоже считаются пробельными символами. Регистр букв сохраняйте.\n\n`clean_caption(\"  мой\\t первый\\nбот  \")` вернёт `\"мой первый бот\"`. Строка из одних пробелов превращается в пустую строку.",
+    "func_name": "clean_caption",
+    "starter": "def clean_caption(text):\n    pass\n",
+    "solution": "def clean_caption(text):\n    return \" \".join(text.split())",
+    "tests": "assert clean_caption('  мой\\t первый\\nбот  ') == 'мой первый бот'\nassert clean_caption(' \\t\\n') == ''\nassert clean_caption('Python') == 'Python'\nassert clean_caption('a   b') == 'a b'\nprint('OK')"
+  },
+  {
+    "id": "seed-streak",
+    "difficulty": "intermediate",
+    "title": "Лучшая серия занятий",
+    "prompt": "Напишите `best_streak(days)`. В списке `True` означает день с занятием, `False` — пропуск. Верните длину самой длинной непрерывной серии занятий, а не общее число занятий. Для пустого списка верните 0.\n\n`best_streak([True, True, False, True])` вернёт `2`.",
+    "func_name": "best_streak",
+    "starter": "def best_streak(days):\n    pass\n",
+    "solution": "def best_streak(days):\n    best = current = 0\n    for studied in days:\n        current = current + 1 if studied else 0\n        best = max(best, current)\n    return best",
+    "tests": "assert best_streak([True, True, False, True]) == 2\nassert best_streak([]) == 0\nassert best_streak([False, False]) == 0\nassert best_streak([False, True, True, True]) == 3\nprint('OK')"
+  },
+  {
+    "id": "seed-expenses",
+    "difficulty": "intermediate",
+    "title": "Расходы по категориям",
+    "prompt": "Напишите `expense_totals(records)`: из списка пар `(категория, сумма)` соберите словарь с общей суммой для каждой категории. Суммы — неотрицательные целые числа. Категории с нулевой суммой тоже оставляйте. Пустой список даёт пустой словарь.\n\n`expense_totals([(\"еда\", 90), (\"книги\", 200), (\"еда\", 60)])` вернёт `{\"еда\": 150, \"книги\": 200}`.",
+    "func_name": "expense_totals",
+    "starter": "def expense_totals(records):\n    pass\n",
+    "solution": "def expense_totals(records):\n    result = {}\n    for category, amount in records:\n        result[category] = result.get(category, 0) + amount\n    return result",
+    "tests": "assert expense_totals([('еда', 90), ('книги', 200), ('еда', 60)]) == {'еда': 150, 'книги': 200}\nassert expense_totals([]) == {}\nassert expense_totals([('x', 0)]) == {'x': 0}\nassert expense_totals([('x', 2), ('x', 3)]) == {'x': 5}\nprint('OK')"
+  },
+  {
+    "id": "seed-scores",
+    "difficulty": "advanced",
+    "title": "Объединить результаты",
+    "prompt": "Напишите `merge_scores(first, second)`. Два словаря хранят имя участника и целое число очков. Верните новый словарь: для повторяющихся имён сложите очки, остальные перенесите как есть. Очки могут быть отрицательными. Оба входных словаря должны остаться прежними.\n\n`merge_scores({\"Лена\": 4}, {\"Лена\": 3, \"Игорь\": 2})` вернёт `{\"Лена\": 7, \"Игорь\": 2}`.",
+    "func_name": "merge_scores",
+    "starter": "def merge_scores(first, second):\n    pass\n",
+    "solution": "def merge_scores(first, second):\n    result = first.copy()\n    for name, score in second.items():\n        result[name] = result.get(name, 0) + score\n    return result",
+    "tests": "a, b = {'Лена': 4}, {'Лена': 3, 'Игорь': 2}\nassert merge_scores(a, b) == {'Лена': 7, 'Игорь': 2}\nassert a == {'Лена': 4} and b == {'Лена': 3, 'Игорь': 2}\nassert merge_scores({}, {}) == {}\nassert merge_scores({'a': 2}, {'a': -2}) == {'a': 0}\nprint('OK')"
+  },
+  {
+    "id": "seed-ranking",
+    "difficulty": "advanced",
+    "title": "Таблица турнира",
+    "prompt": "Напишите `leaderboard(rounds)`. В списке пар `(имя, очки)` участник может встречаться несколько раз. Сначала сложите все его очки, затем верните список пар `(имя, итог)` по убыванию итога. При равном итоге имена должны идти по алфавиту, как при обычном сравнении строк Python. Входной список менять нельзя.\n\n`leaderboard([(\"Bob\", 3), (\"Ann\", 5), (\"Bob\", 2)])` вернёт `[(\"Ann\", 5), (\"Bob\", 5)]`.",
+    "func_name": "leaderboard",
+    "starter": "def leaderboard(rounds):\n    pass\n",
+    "solution": "def leaderboard(rounds):\n    totals = {}\n    for name, score in rounds:\n        totals[name] = totals.get(name, 0) + score\n    return sorted(totals.items(), key=lambda pair: (-pair[1], pair[0]))",
+    "tests": "assert leaderboard([('Bob', 3), ('Ann', 5), ('Bob', 2)]) == [('Ann', 5), ('Bob', 5)]\nassert leaderboard([]) == []\nassert leaderboard([('a', -1), ('b', 2)]) == [('b', 2), ('a', -1)]\nx = [('z', 1), ('a', 1)]\nassert leaderboard(x) == [('a', 1), ('z', 1)]\nassert x == [('z', 1), ('a', 1)]\nprint('OK')"
+  },
+  {
+    "id": "seed-batches",
+    "difficulty": "advanced",
+    "title": "Разбить очередь на партии",
+    "prompt": "Напишите `batches(items, size)`: разделите список на новые списки длиной не больше `size`, сохранив порядок. `size` — положительное целое число. Последняя партия может быть короче. Входной список менять нельзя; изменение списка одной партии не должно менять исходный список.\n\n`batches([1, 2, 3, 4, 5], 2)` вернёт `[[1, 2], [3, 4], [5]]`. Для пустой очереди верните `[]`.",
+    "func_name": "batches",
+    "starter": "def batches(items, size):\n    pass\n",
+    "solution": "def batches(items, size):\n    return [items[i:i + size] for i in range(0, len(items), size)]",
+    "tests": "assert batches([1, 2, 3, 4, 5], 2) == [[1, 2], [3, 4], [5]]\nassert batches([], 3) == []\nassert batches([1, 2], 5) == [[1, 2]]\nx = [1, 2, 3]\ny = batches(x, 1)\ny[0].append(9)\nassert x == [1, 2, 3]\nassert y[1] == [2]\nprint('OK')"
+  },
+  {
+    "id": "seed-actions",
+    "difficulty": "advanced",
+    "title": "Разные действия в журнале",
+    "prompt": "Напишите `action_counts(lines)`. Каждая корректная строка содержит два слова, разделённых пробельными символами: имя пользователя и действие. Строки с другим количеством слов игнорируйте. Верните словарь: пользователь → число его различных действий. Повторы одного действия не увеличивают счётчик; регистр важен.\n\n`action_counts([\"anna login\", \"anna login\", \"anna save\", \"ошибка\"])` вернёт `{\"anna\": 2}`.",
+    "func_name": "action_counts",
+    "starter": "def action_counts(lines):\n    pass\n",
+    "solution": "def action_counts(lines):\n    actions = {}\n    for line in lines:\n        parts = line.split()\n        if len(parts) == 2:\n            user, action = parts\n            actions.setdefault(user, set()).add(action)\n    return {user: len(values) for user, values in actions.items()}",
+    "tests": "assert action_counts(['anna login', 'anna login', 'anna save', 'ошибка']) == {'anna': 2}\nassert action_counts([]) == {}\nassert action_counts(['', 'a b c']) == {}\nassert action_counts([' a\tb ', 'A b', 'a B']) == {'a': 2, 'A': 1}\nprint('OK')"
+  },
+  {
+    "id": "seed-intervals",
+    "difficulty": "expert",
+    "title": "Объединить интервалы",
+    "prompt": "Напишите `merge_ranges(ranges)`. Вход — список пар целых чисел `(начало, конец)`, начало не больше конца. Верните отсортированный список объединённых интервалов в виде кортежей. Пересекающиеся интервалы и интервалы с общей границей объединяются; соседние без общей точки — нет. Исходный список не меняйте.\n\n`merge_ranges([(5, 7), (1, 3), (3, 6)])` вернёт `[(1, 7)]`, а `merge_ranges([(1, 2), (3, 4)])` — `[(1, 2), (3, 4)]`.",
+    "func_name": "merge_ranges",
+    "starter": "def merge_ranges(ranges):\n    pass\n",
+    "solution": "def merge_ranges(ranges):\n    result = []\n    for start, end in sorted(ranges):\n        if result and start <= result[-1][1]:\n            result[-1] = (result[-1][0], max(result[-1][1], end))\n        else:\n            result.append((start, end))\n    return result",
+    "tests": "assert merge_ranges([(5, 7), (1, 3), (3, 6)]) == [(1, 7)]\nassert merge_ranges([(1, 2), (3, 4)]) == [(1, 2), (3, 4)]\nassert merge_ranges([]) == []\nassert merge_ranges([(1, 8), (2, 3), (1, 8)]) == [(1, 8)]\nx = [(4, 4), (-1, 2)]\nassert merge_ranges(x) == [(-1, 2), (4, 4)]\nassert x == [(4, 4), (-1, 2)]\nprint('OK')"
+  },
+  {
+    "id": "seed-route",
+    "difficulty": "expert",
+    "title": "Кратчайший маршрут",
+    "prompt": "Напишите `shortest_route(graph, start, finish)`. Словарь задаёт направленные переходы: ключ — остановка, значение — список доступных соседей в порядке предпочтения. Верните путь с наименьшим числом переходов, включая начало и конец. Из нескольких равных путей выбирайте первый, найденный при обходе соседей в заданном порядке. Если пути нет, верните `[]`; из остановки в неё же — `[start]`. Отсутствующий ключ означает отсутствие исходящих переходов. Возможны циклы.\n\nДля `graph = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [\"D\"]}` вызов `shortest_route(graph, \"A\", \"D\")` вернёт `[\"A\", \"B\", \"D\"]`.",
+    "func_name": "shortest_route",
+    "starter": "def shortest_route(graph, start, finish):\n    pass\n",
+    "solution": "def shortest_route(graph, start, finish):\n    queue = [[start]]\n    visited = {start}\n    for path in queue:\n        node = path[-1]\n        if node == finish:\n            return path\n        for neighbor in graph.get(node, []):\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(path + [neighbor])\n    return []",
+    "tests": "g = {'A': ['B', 'C'], 'B': ['D'], 'C': ['D']}\nassert shortest_route(g, 'A', 'D') == ['A', 'B', 'D']\nassert shortest_route({}, 'X', 'X') == ['X']\nassert shortest_route({}, 'X', 'Y') == []\nassert shortest_route({'A': ['B'], 'B': ['A', 'C']}, 'A', 'C') == ['A', 'B', 'C']\nassert shortest_route({'A': ['B', 'D'], 'B': ['C'], 'C': ['D']}, 'A', 'D') == ['A', 'D']\nprint('OK')"
+  },
+  {
+    "id": "seed-dependencies",
+    "difficulty": "expert",
+    "title": "Порядок зависимостей",
+    "prompt": "Напишите `build_order(deps)`. Словарь связывает имя шага со списком шагов, которые нужно выполнить раньше. Все упомянутые шаги присутствуют среди ключей. Верните допустимый порядок выполнения; на каждом шаге среди доступных выбирайте минимальное имя по обычному сравнению строк Python. Если из-за цикла выполнить все шаги нельзя, верните `None`. Входные данные не меняйте.\n\n`build_order({\"app\": [\"core\"], \"core\": [], \"docs\": []})` вернёт `[\"core\", \"app\", \"docs\"]`.",
+    "func_name": "build_order",
+    "starter": "def build_order(deps):\n    pass\n",
+    "solution": "def build_order(deps):\n    result = []\n    pending = set(deps)\n    while pending:\n        ready = sorted(name for name in pending if all(dep in result for dep in deps[name]))\n        if not ready:\n            return None\n        result.append(ready[0])\n        pending.remove(ready[0])\n    return result",
+    "tests": "assert build_order({'app': ['core'], 'core': [], 'docs': []}) == ['core', 'app', 'docs']\nassert build_order({}) == []\nassert build_order({'a': ['b'], 'b': ['a']}) is None\nassert build_order({'a': ['a']}) is None\nx = {'z': [], 'a': []}\nassert build_order(x) == ['a', 'z']\nassert x == {'z': [], 'a': []}\nprint('OK')"
+  },
+  {
+    "id": "seed-cache",
+    "difficulty": "expert",
+    "title": "Попадания в кэш",
+    "prompt": "Напишите `cache_hits(capacity, requests)` — модель кэша, который хранит не больше `capacity` различных ключей. Ключи — строки. Обращение к уже сохранённому ключу считается попаданием и делает его самым недавно использованным. Новый ключ добавляется; если места нет, сначала удаляется тот, к которому дольше всего не обращались. Верните число попаданий. При нулевой вместимости ничего не сохраняется; `capacity` неотрицательна.\n\n`cache_hits(2, [\"a\", \"b\", \"a\", \"c\", \"b\"])` вернёт `1`: обращение к `a` спасло его, поэтому при добавлении `c` удалился `b`.",
+    "func_name": "cache_hits",
+    "starter": "def cache_hits(capacity, requests):\n    pass\n",
+    "solution": "def cache_hits(capacity, requests):\n    cache = []\n    hits = 0\n    for key in requests:\n        if key in cache:\n            hits += 1\n            cache.remove(key)\n        elif capacity and len(cache) == capacity:\n            cache.pop(0)\n        if capacity:\n            cache.append(key)\n    return hits",
+    "tests": "assert cache_hits(2, ['a', 'b', 'a', 'c', 'b']) == 1\nassert cache_hits(0, ['a', 'a']) == 0\nassert cache_hits(3, []) == 0\nassert cache_hits(1, ['a', 'a', 'b', 'a']) == 1\nassert cache_hits(2, ['a', 'b', 'a', 'b']) == 2\nprint('OK')"
+  }
+]
